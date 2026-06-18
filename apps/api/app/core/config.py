@@ -80,15 +80,11 @@ class Settings(BaseModel):
 
     model_config = ConfigDict(env_file=".env", env_file_encoding="utf-8")
 
-    app_name: str = "cornerstone-api"
+    app_name: str = "reviewlens-api"
     app_version: str = "0.1.0"
     database_url: str = (
-        "postgresql+psycopg://postgres:postgres@localhost:5432/cornerstone"
+        'postgresql+psycopg://postgres:postgres@localhost:5432/reviewlens'
     )
-    clerk_jwks_url: str | None = None
-    clerk_issuer: str | None = None
-    clerk_audience: str | None = None
-    clerk_secret_key: str | None = None
     cors_origin_regex: str | None = LOCALHOST_ORIGIN_REGEX
     cors_origins: list[str] = [
         "http://localhost:5173",
@@ -119,10 +115,6 @@ class Settings(BaseModel):
             )
 
         self.database_url = os.getenv("DATABASE_URL", self.database_url)
-        self.clerk_jwks_url = os.getenv("CLERK_JWKS_URL", self.clerk_jwks_url)
-        self.clerk_issuer = os.getenv("CLERK_ISSUER", self.clerk_issuer)
-        self.clerk_audience = os.getenv("CLERK_AUDIENCE", self.clerk_audience)
-        self.clerk_secret_key = os.getenv("CLERK_SECRET_KEY", self.clerk_secret_key)
 
 
 @lru_cache

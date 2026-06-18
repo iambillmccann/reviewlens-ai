@@ -2,7 +2,7 @@
 # Wires together all AWS modules
 
 locals {
-  project_name = "cornerstone"
+  project_name = "reviewlens-ai"
   environment  = var.environment_name
   name_prefix  = "${local.project_name}-${local.environment}"
 }
@@ -38,7 +38,7 @@ module "database" {
   instance_class           = var.rds_instance_class
   allocated_storage        = var.rds_storage_gb
   publicly_accessible      = var.rds_public_accessibility
-  database_name            = "cornerstone"
+  database_name            = "reviewlens"
   database_username        = "postgres"
   # Password will be generated and stored in Secrets Manager by bootstrap script
 }
@@ -65,14 +65,10 @@ module "backend" {
   app_runner_security_group_id = module.networking.app_runner_security_group_id
 
   # Secrets Manager secret ARNs
-  clerk_secret_key_arn  = var.clerk_secret_key_arn
-  database_url_arn      = var.rds_database_url_arn
+  database_url_arn = var.rds_database_url_arn
 
   # SSM Parameter Store ARNs (created by secrets module)
-  clerk_jwks_url_param_arn = module.secrets.ssm_clerk_jwks_url_arn
-  cors_origins_param_arn   = module.secrets.ssm_cors_origins_arn
-  clerk_issuer_param_arn   = var.clerk_issuer != "" ? module.secrets.ssm_clerk_issuer_arn : ""
-  clerk_audience_param_arn = var.clerk_audience != "" ? module.secrets.ssm_clerk_audience_arn : ""
+  cors_origins_param_arn = module.secrets.ssm_cors_origins_arn
 }
 
 # Frontend (S3 + CloudFront)
@@ -88,13 +84,8 @@ module "frontend" {
 module "secrets" {
   source = "../../modules/secrets"
 
-  name_prefix               = local.name_prefix
-  environment               = local.environment
-  clerk_jwks_url            = var.clerk_jwks_url
-  clerk_issuer              = var.clerk_issuer
-  clerk_audience            = var.clerk_audience
-  clerk_publishable_key     = var.clerk_publishable_key
-  cors_origins              = var.cors_origins
-  vite_api_base_url         = module.backend.app_runner_service_url
-  vite_clerk_publishable_key = var.clerk_publishable_key
+  name_prefix       = local.name_prefix
+  environment       = local.environment
+  cors_origins      = var.cors_origins
+  vite_api_base_url = module.backend.app_runner_service_url
 }

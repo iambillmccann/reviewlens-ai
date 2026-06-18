@@ -23,28 +23,6 @@ on:
         required: true
         default: dev
         type: string
-      clerk_jwks_url:
-        description: Clerk JWKS URL
-        required: true
-        type: string
-      clerk_issuer:
-        description: Optional Clerk issuer
-        required: false
-        default: ""
-        type: string
-      clerk_audience:
-        description: Optional Clerk audience
-        required: false
-        default: ""
-        type: string
-      clerk_publishable_key:
-        description: Clerk publishable key
-        required: true
-        type: string
-      clerk_secret_key_arn:
-        description: Secrets Manager ARN for the Clerk secret key
-        required: true
-        type: string
       rds_database_url_arn:
         description: Secrets Manager ARN for the database URL
         required: true
@@ -65,11 +43,6 @@ env:
   TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
   TF_STATE_KEY: ${{ inputs.tf_state_key }}
   ENVIRONMENT_NAME: ${{ inputs.environment_name }}
-  CLERK_JWKS_URL: ${{ inputs.clerk_jwks_url }}
-  CLERK_ISSUER: ${{ inputs.clerk_issuer }}
-  CLERK_AUDIENCE: ${{ inputs.clerk_audience }}
-  CLERK_PUBLISHABLE_KEY: ${{ inputs.clerk_publishable_key }}
-  CLERK_SECRET_KEY_ARN: ${{ inputs.clerk_secret_key_arn }}
   RDS_DATABASE_URL_ARN: ${{ inputs.rds_database_url_arn }}
   CORS_ORIGINS: ${{ inputs.cors_origins }}
 
@@ -95,7 +68,7 @@ jobs:
         run: |
           missing=0
 
-          for name in AWS_REGION TF_STATE_BUCKET TF_STATE_KEY ENVIRONMENT_NAME CLERK_JWKS_URL CLERK_PUBLISHABLE_KEY CLERK_SECRET_KEY_ARN RDS_DATABASE_URL_ARN; do
+          for name in AWS_REGION TF_STATE_BUCKET TF_STATE_KEY ENVIRONMENT_NAME RDS_DATABASE_URL_ARN; do
             if [[ -z "${!name}" ]]; then
               echo "Missing required workflow input: $name" >&2
               missing=1
@@ -117,11 +90,6 @@ jobs:
           cat > terraform.auto.tfvars <<EOF
           aws_region = "${AWS_REGION}"
           environment_name = "${ENVIRONMENT_NAME:-dev}"
-          clerk_jwks_url = "${CLERK_JWKS_URL}"
-          clerk_issuer = "${CLERK_ISSUER:-}"
-          clerk_audience = "${CLERK_AUDIENCE:-}"
-          clerk_publishable_key = "${CLERK_PUBLISHABLE_KEY}"
-          clerk_secret_key_arn = "${CLERK_SECRET_KEY_ARN}"
           rds_database_url_arn = "${RDS_DATABASE_URL_ARN}"
           cors_origins = "${CORS_ORIGINS:-}"
           EOF
@@ -144,7 +112,7 @@ jobs:
       - name: Sync DATABASE_URL secret from RDS
         working-directory: infra/providers/aws/terraform/environments/dev
         run: |
-          db_instance_id="cornerstone-${ENVIRONMENT_NAME}-db"
+          db_instance_id="reviewlens-${ENVIRONMENT_NAME}-db"
           master_secret_arn=$(aws rds describe-db-instances \
             --db-instance-identifier "${db_instance_id}" \
             --query 'DBInstances[0].MasterUserSecret.SecretArn' \
@@ -183,17 +151,14 @@ jobs:
         working-directory: infra/providers/aws/terraform/environments/dev
         run: |
           ECR_URL=$(aws ecr describe-repositories \
-            --repository-names "cornerstone-${ENVIRONMENT_NAME}-api" \
+            --repository-names "reviewlens-${ENVIRONMENT_NAME}-api" \
             --query "repositories[0].repositoryUri" --output text)
           echo "ECR URL: ${ECR_URL}"
 
-          # Login to ECR (login endpoint is the registry root, not the repo URL)
           ECR_REGISTRY=$(echo "${ECR_URL}" | cut -d'/' -f1)
           aws ecr get-login-password --region "${AWS_REGION}" \
             | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
 
-          # Build a minimal bootstrap image that listens on port 8000.
-          # The deploy workflow will replace this with the real application image.
           printf '%s\n' \
             'FROM python:3.12-slim' \
             'EXPOSE 8000' \

@@ -34,29 +34,12 @@ variable "app_runner_security_group_id" {
   type = string
 }
 
-variable "clerk_secret_key_arn" {
-  type      = string
-  sensitive = true
-}
-
 variable "database_url_arn" {
   type      = string
   sensitive = true
 }
 
-variable "clerk_jwks_url_param_arn" {
-  type = string
-}
-
 variable "cors_origins_param_arn" {
-  type = string
-}
-
-variable "clerk_issuer_param_arn" {
-  type = string
-}
-
-variable "clerk_audience_param_arn" {
   type = string
 }
 
@@ -143,7 +126,6 @@ resource "aws_iam_role_policy" "secrets_manager" {
           "secretsmanager:GetSecretValue"
         ]
         Resource = [
-          var.clerk_secret_key_arn,
           var.database_url_arn
         ]
       }
@@ -166,10 +148,7 @@ resource "aws_iam_role_policy" "ssm_parameters" {
           "ssm:GetParameters"
         ]
         Resource = compact([
-          var.clerk_jwks_url_param_arn,
-          var.cors_origins_param_arn,
-          var.clerk_issuer_param_arn,
-          var.clerk_audience_param_arn
+          var.cors_origins_param_arn
         ])
       }
     ]
@@ -202,20 +181,10 @@ resource "aws_apprunner_service" "main" {
       image_configuration {
         port = "8000"
 
-        runtime_environment_secrets = merge(
-          {
-            "CLERK_SECRET_KEY" = var.clerk_secret_key_arn
-            "DATABASE_URL"     = var.database_url_arn
-            "CLERK_JWKS_URL"   = var.clerk_jwks_url_param_arn
-            "CORS_ORIGINS"     = var.cors_origins_param_arn
-          },
-          var.clerk_issuer_param_arn != "" ? {
-            "CLERK_ISSUER" = var.clerk_issuer_param_arn
-          } : {},
-          var.clerk_audience_param_arn != "" ? {
-            "CLERK_AUDIENCE" = var.clerk_audience_param_arn
-          } : {}
-        )
+        runtime_environment_secrets = {
+          "DATABASE_URL" = var.database_url_arn
+          "CORS_ORIGINS" = var.cors_origins_param_arn
+        }
       }
     }
 
