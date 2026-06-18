@@ -1,5 +1,4 @@
 from typing import Any
-import uuid
 
 from pydantic import BaseModel, Field
 
@@ -11,23 +10,6 @@ class HealthResponse(BaseModel):
 class VersionResponse(BaseModel):
     name: str
     version: str
-
-
-class AuthIdentityResponse(BaseModel):
-    sub: str
-    sid: str | None = None
-    iss: str | None = None
-    azp: str | None = None
-    email: str | None = None
-
-
-class AppUserProfile(BaseModel):
-    """Application user profile backed by local persistence."""
-
-    id: uuid.UUID
-    email: str | None = None
-    display_name: str | None = None
-    avatar_url: str | None = None
 
 
 class ApiErrorDetail(BaseModel):

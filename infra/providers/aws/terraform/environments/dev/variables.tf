@@ -10,39 +10,6 @@ variable "environment_name" {
   default     = "dev"
 }
 
-# Clerk Configuration
-variable "clerk_jwks_url" {
-  description = "Clerk JWKS URL for JWT verification"
-  type        = string
-  sensitive   = true
-}
-
-variable "clerk_issuer" {
-  description = "Clerk issuer URL (optional for compatibility; recommended for strict JWT validation)"
-  type        = string
-  default     = ""
-  sensitive   = true
-}
-
-variable "clerk_audience" {
-  description = "Clerk audience (optional for compatibility; recommended for strict JWT validation)"
-  type        = string
-  default     = ""
-  sensitive   = true
-}
-
-variable "clerk_publishable_key" {
-  description = "Clerk publishable key (frontend build-time env var)"
-  type        = string
-  sensitive   = true
-}
-
-variable "clerk_secret_key_arn" {
-  description = "ARN of Secrets Manager secret containing CLERK_SECRET_KEY (created by bootstrap script)"
-  type        = string
-  sensitive   = true
-}
-
 # Database
 variable "rds_database_url_arn" {
   description = "ARN of Secrets Manager secret containing DATABASE_URL (created by bootstrap script)"

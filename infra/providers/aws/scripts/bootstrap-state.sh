@@ -8,11 +8,10 @@
 # Prompts for:
 #   - AWS_REGION (default: us-east-1)
 #   - AWS_ACCOUNT_ID (auto-detected if AWS CLI configured)
-#   - CLERK_SECRET_KEY (required)
 
 set -e
 
-echo "=== Cornerstone AWS Bootstrap ==="
+echo "=== ReviewLens AI AWS Bootstrap ==="
 echo ""
 echo "This script creates:"
 echo "  - S3 bucket for Terraform state"
@@ -39,17 +38,9 @@ fi
 echo "Using Account: $ACCOUNT_ID, Region: $AWS_REGION"
 echo ""
 
-# Get Clerk secret key
-read -sp "Enter CLERK_SECRET_KEY: " CLERK_SECRET_KEY
-echo ""
-if [ -z "$CLERK_SECRET_KEY" ]; then
-  echo "Error: CLERK_SECRET_KEY required"
-  exit 1
-fi
-
 # State bucket name
-STATE_BUCKET="cornerstone-tf-state-${ACCOUNT_ID}"
-LOCK_TABLE="cornerstone-tf-lock"
+STATE_BUCKET="reviewlens-tf-state-${ACCOUNT_ID}"
+LOCK_TABLE="reviewlens-tf-lock"
 
 echo "Creating S3 bucket: $STATE_BUCKET"
 if aws s3api head-bucket --bucket "$STATE_BUCKET" >/dev/null 2>&1; then
@@ -102,35 +93,17 @@ echo "Creating Secrets Manager secrets"
 
 # DATABASE_URL secret (placeholder for now)
 DB_PASSWORD=$(openssl rand -base64 32)
-DATABASE_URL="postgresql://postgres:${DB_PASSWORD}@cornerstone-dev-db.c123456.us-east-1.rds.amazonaws.com:5432/cornerstone"
-
-aws secretsmanager create-secret \
-  --name "cornerstone-database-url" \
-  --region "$AWS_REGION" \
-  --secret-string "$DATABASE_URL" \
-  2>/dev/null || echo "  DATABASE_URL secret already exists (updating)"
+DATABASE_URL="postgresql+psycopg://postgres:${DB_PASSWORD}@reviewlens-dev-db.c123456.us-east-1.rds.amazonaws.com:5432/reviewlens"
 
 if ! aws secretsmanager create-secret \
-  --name "cornerstone-database-url" \
+  --name "reviewlens-database-url" \
   --region "$AWS_REGION" \
   --secret-string "$DATABASE_URL" \
   2>/dev/null; then
   aws secretsmanager update-secret \
-    --secret-id "cornerstone-database-url" \
+    --secret-id "reviewlens-database-url" \
     --region "$AWS_REGION" \
     --secret-string "$DATABASE_URL"
-fi
-
-# CLERK_SECRET_KEY secret
-if ! aws secretsmanager create-secret \
-  --name "cornerstone-clerk-secret-key" \
-  --region "$AWS_REGION" \
-  --secret-string "$CLERK_SECRET_KEY" \
-  2>/dev/null; then
-  aws secretsmanager update-secret \
-    --secret-id "cornerstone-clerk-secret-key" \
-    --region "$AWS_REGION" \
-    --secret-string "$CLERK_SECRET_KEY"
 fi
 
 echo ""
@@ -144,22 +117,15 @@ echo ""
 echo "2. Get secret ARNs (paste into terraform.tfvars):"
 
 DATABASE_URL_ARN=$(aws secretsmanager describe-secret \
-  --secret-id "cornerstone-database-url" \
-  --region "$AWS_REGION" \
-  --query 'ARN' \
-  --output text)
-
-CLERK_SECRET_KEY_ARN=$(aws secretsmanager describe-secret \
-  --secret-id "cornerstone-clerk-secret-key" \
+  --secret-id "reviewlens-database-url" \
   --region "$AWS_REGION" \
   --query 'ARN' \
   --output text)
 
 echo ""
 echo "DATABASE_URL_ARN: $DATABASE_URL_ARN"
-echo "CLERK_SECRET_KEY_ARN: $CLERK_SECRET_KEY_ARN"
 echo ""
-echo "3. Update terraform.tfvars with the above ARNs"
+echo "3. Update terraform.tfvars with the above ARN"
 echo ""
 echo "4. Initialize Terraform:"
 echo "   cd infra/providers/aws/terraform/environments/dev"

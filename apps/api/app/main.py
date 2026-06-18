@@ -6,7 +6,6 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 import logging
 
 from app.core.config import settings
-from app.db import models  # noqa: F401 - ensure model metadata is registered
 from app.db.session import Base, engine
 from app.routes import canonical_router, router as v1_router
 from app.schemas import ApiError, ApiErrorDetail, ApiErrorResponse

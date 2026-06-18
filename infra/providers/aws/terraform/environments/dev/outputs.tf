@@ -75,19 +75,11 @@ output "database_url_secret_arn" {
   sensitive   = true
 }
 
-output "clerk_secret_key_arn" {
-  description = "ARN of CLERK_SECRET_KEY secret in Secrets Manager"
-  value       = var.clerk_secret_key_arn
-  sensitive   = true
-}
-
 output "ssm_parameters" {
   description = "Map of SSM Parameter Store parameter names and their values"
   value = {
-    "clerk_jwks_url"        = module.secrets.ssm_clerk_jwks_url
-    "cors_origins"          = module.secrets.ssm_cors_origins
-    "vite_api_base_url"     = module.secrets.ssm_vite_api_base_url
-    "vite_clerk_publishable_key" = module.secrets.ssm_vite_clerk_publishable_key
+    "cors_origins"      = module.secrets.ssm_cors_origins
+    "vite_api_base_url" = module.secrets.ssm_vite_api_base_url
   }
   sensitive = true
 }
@@ -104,12 +96,8 @@ output "deployment_summary" {
     Database:     ${module.database.rds_endpoint}
 
     Next Steps:
-    1. Update Clerk Dashboard with these URLs:
-       - Allowed Origins: https://${module.frontend.cloudfront_domain_name}
-       - Redirect URLs: https://${module.frontend.cloudfront_domain_name}/sign-in
-                        https://${module.frontend.cloudfront_domain_name}/sign-up
-    2. Push to main branch to trigger deployment
-    3. Monitor GitHub Actions for build/deploy progress
+    1. Push to main branch to trigger deployment
+    2. Monitor GitHub Actions for build/deploy progress
 
     Configuration Files:
     - App Runner environment: SSM Parameter Store
