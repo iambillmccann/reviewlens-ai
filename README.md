@@ -1,10 +1,8 @@
-# Cornerstone
+# Reviewlens-ai
 
-Cornerstone is a reusable application template for small SaaS products.
+Reviewlens-ai is the working application repository.
 
-It provides the common foundation for future apps, including layout conventions, authentication wiring, API structure, database setup, CI/CD validation, and deployment plumbing.
-
-Cornerstone is not itself a production product. Its purpose is to validate and preserve the reusable starting point for future applications.
+It provides a React/Vite frontend, FastAPI backend, PostgreSQL persistence, and AWS deployment workflows.
 
 ---
 
@@ -26,7 +24,7 @@ PWA implementation notes:
 - Build plugin: vite-plugin-pwa
 - Install assets: web manifest and app icons under apps/web/public/icons/
 - Runtime caching is conservative for SaaS auth safety:
-  - NetworkOnly for API and Clerk/auth-related traffic
+  - NetworkOnly for API traffic
   - StaleWhileRevalidate for static assets
   - NetworkFirst for non-API page navigations
 - Service worker is registered in production builds
@@ -56,13 +54,6 @@ Run local development with three running processes:
 - Docker Desktop running
 - Python 3.11+ installed
 - Node 20.19.0 installed (`nvm use 20.19.0`)
-- Clerk environment variables configured (see `docs/setup/authentication.md`)
-
-Important auth isolation rule:
-
-- Use separate Clerk apps per environment (`cornerstone-local` and `cornerstone-dev`).
-- Do not point local and cloud dev at the same Clerk app.
-- If separation was not done initially, follow reset runbook in `docs/operations/cloud-development.md`.
 
 ### First-Time Setup
 
@@ -76,8 +67,9 @@ Important auth isolation rule:
 
 ```bash
 cd apps/api
-python -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
+python -m pip install --upgrade pip setuptools wheel
 pip install -e ".[dev]"
 alembic upgrade head
 ```
@@ -169,7 +161,7 @@ Use local `terraform.tfvars` files for environment values and secrets, and keep 
 | `scripts/dev-db-down.sh`                    | Stop the local PostgreSQL container                                                                                    |
 | `scripts/dev-db-reset.sh`                   | Wipe and recreate the local database                                                                                   |
 
-`cloud-status.sh` is template-portable: it derives the resource name prefix from `GITHUB_REPO` in `aws-env.sh`, so apps built from Cornerstone only need to update that one variable.
+`cloud-status.sh` is template-portable: it derives the resource name prefix from `GITHUB_REPO` in `aws-env.sh`, so apps built from Reviewlens-ai only need to update that one variable.
 
 ## AWS Manual Setup Notes
 
@@ -213,13 +205,8 @@ Provision workflow inputs:
 - `TF_STATE_BUCKET`: remote Terraform state bucket name created by bootstrap
 - `TF_STATE_KEY`: remote Terraform state object key, for example `dev/terraform.tfstate`
 - `ENVIRONMENT_NAME`: Terraform environment name, typically `dev`
-- `CLERK_JWKS_URL`: Clerk JWKS URL
-- `CLERK_PUBLISHABLE_KEY`: Clerk publishable key used by frontend builds
-- `CLERK_SECRET_KEY_ARN`: Secrets Manager ARN for the Clerk secret key
 - `RDS_DATABASE_URL_ARN`: Secrets Manager ARN for the database URL
 - `CORS_ORIGINS`: CloudFront URL after first provision; may be blank on the first run
-- `CLERK_ISSUER`: optional
-- `CLERK_AUDIENCE`: optional
 
 Provision workflow behavior notes:
 
@@ -238,7 +225,7 @@ Deploy workflow inputs:
 
 Deploy workflow behavior notes:
 
-- Ensures `/cornerstone-dev/cors_origins` contains the current CloudFront origin before App Runner deployment.
+- Ensures `/reviewlens-ai-dev/cors_origins` contains the current CloudFront origin before App Runner deployment.
 - Treats App Runner `ROLLBACK_SUCCEEDED` as a terminal deployment failure state (fail-fast instead of timing out).
 
 Teardown workflow inputs:
@@ -250,8 +237,6 @@ Teardown workflow inputs:
 - `ENVIRONMENT_NAME`
 - `CONFIRM_DESTROY`: must be set to `DESTROY` for destroy mode
 - `KEEP_ECR_REPOSITORY`: `true` or `false` (destroy mode only)
-
-The deploy workflow reads the frontend publishable key from SSM Parameter Store after Terraform provisioning, so it does not require that value to be repeated manually.
 
 Backend image behavior in deploy workflow:
 
@@ -281,8 +266,8 @@ This repository does not use a CloudFormation stack or AWS CDK stack to group re
 Instead, AWS resources are organized by:
 
 - Terraform state in `infra/providers/aws/terraform/environments/dev`
-- Consistent naming with the `cornerstone-dev-*` prefix
-- Shared AWS tags such as `Project=cornerstone`, `Environment=dev`, and `ManagedBy=terraform`
+- Consistent naming with the `reviewlens-ai-dev-*` prefix
+- Shared AWS tags such as `Project=reviewlens-ai`, `Environment=dev`, and `ManagedBy=terraform`
 
 That means full teardown will be driven by `terraform destroy`, not by deleting a single AWS stack.
 

@@ -1,12 +1,13 @@
-# Cornerstone API
+# Reviewlens-ai API
 
-FastAPI backend for the Cornerstone project.
+FastAPI backend for the Reviewlens-ai project.
 
 ## Run locally
 
 ```bash
-python -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
+python -m pip install --upgrade pip setuptools wheel
 pip install -e .
 uvicorn app.main:app --reload --port 8000
 ```
@@ -25,12 +26,10 @@ Start local PostgreSQL from repo root:
 - `GET /api/v1/ready` — Readiness check
 - `GET /api/v1/version` — API version info
 
-### Authentication (Clerk-based)
+### Application Endpoints
 
-- `GET /api/me` (canonical) — Returns authenticated app user profile (requires `Authorization: Bearer <clerk_token>`)
-  - Response: `{ id, email, display_name, avatar_url }`
-  - Bootstraps local user on first call; idempotent thereafter
-- `GET /api/v1/auth/me` (legacy) — Returns verified Clerk token identity claims (for debugging)
+- `GET /api/me` (canonical) — Returns the app user profile when available
+- `GET /api/v1/auth/me` (legacy) — Compatibility endpoint retained during transition
 
 ## Testing
 
@@ -71,13 +70,7 @@ alembic upgrade head
 
 Create environment variables from the repo root `.env.example` and ensure `DATABASE_URL` points to the local PostgreSQL container:
 
-`postgresql+psycopg://postgres:postgres@localhost:5432/cornerstone`
-
-Auth-related settings:
-
-- `CLERK_JWKS_URL`: required for Clerk JWT signature verification
-- `CLERK_ISSUER`: optional strict issuer check
-- `CLERK_AUDIENCE`: optional strict audience check
+`postgresql+psycopg://postgres:postgres@localhost:5432/reviewlens-ai`
 
 Database-related setting:
 

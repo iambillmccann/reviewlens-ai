@@ -1,21 +1,21 @@
 services:
   db:
     image: postgres:16
-    container_name: cornerstone-db
+    container_name: reviewlens-ai-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: cornerstone
+      POSTGRES_DB: reviewlens-ai
     ports:
       - "5432:5432"
     volumes:
-      - cornerstone_db_data:/var/lib/postgresql/data
+      - reviewlens-ai_db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d cornerstone"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d reviewlens-ai"]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
-  cornerstone_db_data:
+  reviewlens-ai_db_data:

@@ -2,9 +2,9 @@
 
 ## Purpose
 
-Cornerstone infrastructure must support repeatable cloud deployment, validation, and teardown.
+Reviewlens-ai infrastructure must support repeatable cloud deployment, validation, and teardown.
 
-Cornerstone is not a production product. Its cloud deployment exists to validate that applications built from the template can be provisioned, deployed, tested, and destroyed safely.
+Reviewlens-ai is not a production product. Its cloud deployment exists to validate that applications built from the template can be provisioned, deployed, tested, and destroyed safely.
 
 ## Core Principles
 
@@ -13,7 +13,7 @@ Cornerstone is not a production product. Its cloud deployment exists to validate
 - Keep application code cloud-neutral.
 - Keep provider-specific code isolated under `infra/providers/<provider>`.
 - Make teardown a first-class workflow.
-- Avoid permanently running infrastructure for Cornerstone unless explicitly required.
+- Avoid permanently running infrastructure for Reviewlens-ai unless explicitly required.
 - Do not introduce Kubernetes.
 - Do not build a private platform layer.
 - Optimize for clarity and repeatability over maximum cloud feature usage.
@@ -92,17 +92,17 @@ Production tags should point to the same commit previously validated as a releas
 
 ## Environment Standards
 
-Cornerstone implements only:
+Reviewlens-ai implements only:
 
 - local development
 - cloud development
 
-Applications built from Cornerstone may later add:
+Applications built from Reviewlens-ai may later add:
 
 - staging
 - production
 
-Do not implement staging or production inside Cornerstone unless explicitly requested.
+Do not implement staging or production inside Reviewlens-ai unless explicitly requested.
 
 ## AWS Adapter Expectations
 
@@ -145,7 +145,7 @@ Avoid:
   - preserve database
   - reset schema
 
-For Cornerstone cloud development, disposable database state is acceptable unless otherwise specified.
+For Reviewlens-ai cloud development, disposable database state is acceptable unless otherwise specified.
 
 ## Smoke Test Standards
 
@@ -162,7 +162,7 @@ Every deployed cloud-dev environment should validate:
 
 - Prefer resources that can scale to zero or be destroyed.
 - Keep default instance sizes minimal.
-- Do not provision production-grade redundancy for Cornerstone.
+- Do not provision production-grade redundancy for Reviewlens-ai.
 - Any always-on cost must be explicitly justified.
 - Document estimated monthly cost for idle and active cloud-dev usage.
 

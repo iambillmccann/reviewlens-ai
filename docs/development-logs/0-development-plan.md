@@ -17,17 +17,17 @@ Goal: a clean React app.
 Checkpoint:
 
 ```text
-localhost:5173 shows generic Cornerstone shell
+localhost:5173 shows generic Reviewlens-ai shell
 ```
 
-## 2. Add Clerk to the frontend
+## 2. Add authentication to the frontend
 
 Goal: users can register/login.
 
-- create Clerk application
-- add Clerk env vars
-- install Clerk React SDK
-- wrap app with Clerk provider
+- create authentication application
+- add authentication env vars
+- install authentication React SDK
+- wrap app with authentication provider
 - add sign-in / sign-up routes or components
 - protect the app shell
 
@@ -59,9 +59,9 @@ frontend can call API health endpoint
 
 ## 4. Add backend auth verification
 
-Goal: API trusts Clerk tokens.
+Goal: API trusts authentication tokens.
 
-- frontend sends Clerk session token
+- frontend sends authentication session token
 - FastAPI validates token
 - protected endpoint returns current auth identity
 - do not create app user model yet unless needed
@@ -99,7 +99,7 @@ Goal: real logged-in landing page.
 - frontend calls `/api/me`
 - displays user name/email/avatar if available
 - left nav/top nav remain generic
-- homepage says something like “Welcome to Cornerstone”
+- homepage says something like “Welcome to Reviewlens-ai”
 
 Checkpoint:
 
@@ -127,7 +127,7 @@ Goal: public web URL.
 
 - deploy `apps/web` to Cloudflare Pages
 - configure build command
-- configure Clerk publishable key
+- configure authentication publishable key
 - set API base URL placeholder
 
 Checkpoint:
@@ -158,7 +158,7 @@ Goal: full deployed thin slice.
 
 - set frontend API URL to Railway API
 - set CORS to Cloudflare Pages URL
-- configure Clerk production URLs
+- configure authentication production URLs
 - verify login/register
 - verify protected homepage
 
@@ -170,13 +170,13 @@ public URL → register/login → protected empty homepage with navigation
 
 ## Milestone 1 Complete (2026-05-14)
 
-- All vertical slices (frontend, Clerk auth, backend, persistence, CI, deployment) are implemented and validated.
+- All vertical slices (frontend, authentication auth, backend, persistence, CI, deployment) are implemented and validated.
 - CORS is now robust: wildcard origin support for Cloudflare Pages preview deploys, no more manual edits needed.
 - All tests passing, CI green, and both frontend/backend are live and integrated.
-- See /memories/repo/cornerstone-milestone-1.md for a full summary.
+- See /memories/repo/reviewlens-ai-milestone-1.md for a full summary.
 
 ## Closeout Notes (2026-05-17)
 
 - Milestone 1 is complete as an end-to-end validation milestone, not as a finished product template.
 - The current always-on pull deployment model proved the stack but is provisional for template use; a future ephemeral deploy plus teardown workflow is likely a better fit.
-- Clerk remains a valid auth service choice, but the hosted Clerk UI is provisional and expected to be replaced with custom registration, login, and account-management flows in a later milestone.
+- authentication remains a valid auth service choice, but the hosted authentication UI is provisional and expected to be replaced with custom registration, login, and account-management flows in a later milestone.

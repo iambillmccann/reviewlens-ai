@@ -1,10 +1,10 @@
 # Deployment Architecture (AWS Provider Adapter)
 
-This document describes Cornerstone's cloud deployment architecture and how the infrastructure remains portable across providers.
+This document describes Reviewlens-ai's cloud deployment architecture and how the infrastructure remains portable across providers.
 
 ## Provider Adapter Model
 
-Cornerstone uses a provider adapter approach under `infra/providers/{provider}`.
+Reviewlens-ai uses a provider adapter approach under `infra/providers/{provider}`.
 
 - `infra/providers/aws`: implemented and active
 - `infra/providers/gcp`: planned
@@ -26,7 +26,7 @@ Current AWS adapter (`infra/providers/aws`) provisions:
 
 ## Environment Lifecycle
 
-Cornerstone defines two lifecycle operations for cloud dev:
+Reviewlens-ai defines two lifecycle operations for cloud dev:
 
 1. Provision: create/update resources via Terraform (`provision-dev.yml`)
 2. Deploy: ship backend/frontend artifacts to provisioned resources (`deploy-dev.yml`)

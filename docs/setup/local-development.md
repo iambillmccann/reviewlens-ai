@@ -28,4 +28,4 @@ Reset the database:
 
 Authentication setup:
 
-- Follow [Authentication Setup (Clerk)](./authentication.md) before running login and registration flows locally.
+- Reviewlens-ai does not require authentication for local development.

@@ -1,8 +1,3 @@
-import { useAuth, useClerk, useUser } from '@clerk/clerk-react'
-import { useState } from 'react'
-import { Navigate } from 'react-router-dom'
-
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -12,57 +7,28 @@ import {
 } from '@/components/ui/card'
 
 export function Account() {
-  const { isLoaded, isSignedIn } = useAuth()
-  const { signOut } = useClerk()
-  const { user, isLoaded: isUserLoaded } = useUser()
-  const [isSigningOut, setIsSigningOut] = useState(false)
-
-  if (!isLoaded || !isUserLoaded) {
-    return (
-      <div className="text-sm text-muted-foreground">
-        Loading account details...
-      </div>
-    )
-  }
-
-  if (!isSignedIn || !user) {
-    return <Navigate to="/sign-in" replace />
-  }
-
-  const fullName = user.fullName || user.username || 'Not set'
-  const primaryEmail = user.primaryEmailAddress?.emailAddress || 'Not set'
-  const avatarUrl = user.imageUrl
-
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="text-xl">Account</CardTitle>
           <CardDescription>
-            Manage your identity details connected to your Cornerstone workspace.
+            Authentication is currently disabled for Reviewlens-ai.
           </CardDescription>
         </CardHeader>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Identity</CardTitle>
+          <CardTitle className="text-base">Access Model</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt={fullName}
-              className="h-16 w-16 rounded-full border border-border"
-            />
-          ) : null}
-
           <div className="space-y-2 text-sm">
             <p>
-              <span className="font-medium text-foreground">Name:</span> {fullName}
+              <span className="font-medium text-foreground">Status:</span> Public access enabled
             </p>
             <p>
-              <span className="font-medium text-foreground">Email:</span> {primaryEmail}
+              <span className="font-medium text-foreground">Identity provider:</span> None configured
             </p>
           </div>
         </CardContent>
@@ -70,24 +36,11 @@ export function Account() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Session</CardTitle>
-          <CardDescription>Sign out from your current session.</CardDescription>
+          <CardTitle className="text-base">Next Step</CardTitle>
+          <CardDescription>Use this page for product-level account preferences once they are implemented.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Button
-            variant="outline"
-            onClick={async () => {
-              setIsSigningOut(true)
-              try {
-                await signOut({ redirectUrl: '/sign-in' })
-              } finally {
-                setIsSigningOut(false)
-              }
-            }}
-            disabled={isSigningOut}
-          >
-            {isSigningOut ? 'Signing out...' : 'Sign out'}
-          </Button>
+        <CardContent className="text-sm text-muted-foreground">
+          This route is available so the app shell remains stable while account management is being rebuilt.
         </CardContent>
       </Card>
     </div>

@@ -11,9 +11,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icons/icon-192.svg', 'icons/icon-512.svg', 'icons/icon-maskable.svg'],
       manifest: {
-        name: 'Cornerstone',
-        short_name: 'Cornerstone',
-        description: 'Cornerstone SaaS template',
+        name: 'Reviewlens-ai',
+        short_name: 'Reviewlens-ai',
+        description: 'Reviewlens-ai web application',
         theme_color: '#111111',
         background_color: '#ffffff',
         display: 'standalone',
@@ -43,10 +43,7 @@ export default defineConfig({
           {
             urlPattern: ({ url }) =>
               url.pathname.startsWith('/api/') ||
-              url.hostname.includes('clerk') ||
-              url.pathname.startsWith('/sign-in') ||
-              url.pathname.startsWith('/sign-up') ||
-              url.pathname.startsWith('/sso-callback'),
+              url.pathname.startsWith('/auth/'),
             handler: 'NetworkOnly',
           },
           {
@@ -59,7 +56,7 @@ export default defineConfig({
               url.pathname.startsWith('/assets/'),
             handler: 'StaleWhileRevalidate',
             options: {
-              cacheName: 'cornerstone-static-assets',
+              cacheName: 'reviewlens-ai-static-assets',
               expiration: {
                 maxEntries: 200,
                 maxAgeSeconds: 60 * 60 * 24 * 30,
@@ -71,7 +68,7 @@ export default defineConfig({
               request.mode === 'navigate' && !url.pathname.startsWith('/api/'),
             handler: 'NetworkFirst',
             options: {
-              cacheName: 'cornerstone-pages',
+              cacheName: 'reviewlens-ai-pages',
               networkTimeoutSeconds: 3,
               expiration: {
                 maxEntries: 30,

@@ -1,6 +1,6 @@
 # Infrastructure as Code: Provider Adapter Model
 
-Cornerstone uses a cloud-provider adapter pattern for infrastructure. This allows Cornerstone to remain cloud-neutral while supporting multiple deployment targets (AWS, GCP, Azure).
+Reviewlens-ai uses a cloud-provider adapter pattern for infrastructure. This allows Reviewlens-ai to remain cloud-neutral while supporting multiple deployment targets (AWS, GCP, Azure).
 
 ## Structure
 

@@ -80,10 +80,10 @@ class Settings(BaseModel):
 
     model_config = ConfigDict(env_file=".env", env_file_encoding="utf-8")
 
-    app_name: str = "cornerstone-api"
+    app_name: str = "reviewlens-ai-api"
     app_version: str = "0.1.0"
     database_url: str = (
-        "postgresql+psycopg://postgres:postgres@localhost:5432/cornerstone"
+        "postgresql+psycopg://postgres:postgres@localhost:5432/reviewlens-ai"
     )
     clerk_jwks_url: str | None = None
     clerk_issuer: str | None = None

@@ -2,7 +2,7 @@
 
 ## Decision
 
-Cornerstone will use the following initial stack:
+Reviewlens-ai will use the following initial stack:
 
 - React
 - TypeScript
@@ -15,13 +15,10 @@ Cornerstone will use the following initial stack:
 - Pydantic
 - Alembic
 - PostgreSQL
-- Clerk
 - REST
 - OpenAPI
-- Railway
-- Cloudflare Pages
 - GitHub Actions
 
 ## Notes
 
-Cornerstone is a reusable application template, not a production product. Deployment exists primarily to validate integration, CI/CD, and teardown.
+Reviewlens-ai is a reusable application template, not a production product. Deployment exists primarily to validate integration, CI/CD, and teardown.

@@ -1,6 +1,6 @@
 # API Conventions
 
-Cornerstone uses REST.
+Reviewlens-ai uses REST.
 
 Success responses should use:
 

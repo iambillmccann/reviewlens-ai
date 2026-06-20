@@ -1,8 +1,8 @@
-# UI/UX Standards — Cornerstone Frontend
+# UI/UX Standards — Reviewlens-ai Frontend
 
 ## Overview
 
-Cornerstone uses **Tailwind CSS** for styling, **shadcn/ui** for component primitives, and **composition wrappers** for customization safety. This document establishes baseline conventions to keep the frontend maintainable and extensible.
+Reviewlens-ai uses **Tailwind CSS** for styling, **shadcn/ui** for component primitives, and **composition wrappers** for customization safety. This document establishes baseline conventions to keep the frontend maintainable and extensible.
 
 ## Component Architecture
 
