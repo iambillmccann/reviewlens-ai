@@ -2,7 +2,7 @@
 # Wires together all AWS modules
 
 locals {
-  project_name = "cornerstone"
+  project_name = "reviewlens-ai"
   environment  = var.environment_name
   name_prefix  = "${local.project_name}-${local.environment}"
 }
@@ -38,7 +38,7 @@ module "database" {
   instance_class           = var.rds_instance_class
   allocated_storage        = var.rds_storage_gb
   publicly_accessible      = var.rds_public_accessibility
-  database_name            = "cornerstone"
+  database_name            = "reviewlens-ai"
   database_username        = "postgres"
   # Password will be generated and stored in Secrets Manager by bootstrap script
 }

@@ -220,7 +220,7 @@ jobs:
         if: ${{ inputs.mode == 'destroy' }}
         working-directory: infra/providers/aws/terraform/environments/dev
         run: |
-          name_prefix="cornerstone-${ENVIRONMENT_NAME}"
+          name_prefix="reviewlens-ai-${ENVIRONMENT_NAME}"
           s3_bucket_name=$(terraform output -raw s3_bucket_name 2>/dev/null || true)
           ecr_repository_url=$(terraform output -raw ecr_repository_url 2>/dev/null || true)
           ecr_repository_name=""

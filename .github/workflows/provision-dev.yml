@@ -144,7 +144,7 @@ jobs:
       - name: Sync DATABASE_URL secret from RDS
         working-directory: infra/providers/aws/terraform/environments/dev
         run: |
-          db_instance_id="cornerstone-${ENVIRONMENT_NAME}-db"
+          db_instance_id="reviewlens-ai-${ENVIRONMENT_NAME}-db"
           master_secret_arn=$(aws rds describe-db-instances \
             --db-instance-identifier "${db_instance_id}" \
             --query 'DBInstances[0].MasterUserSecret.SecretArn' \
@@ -183,7 +183,7 @@ jobs:
         working-directory: infra/providers/aws/terraform/environments/dev
         run: |
           ECR_URL=$(aws ecr describe-repositories \
-            --repository-names "cornerstone-${ENVIRONMENT_NAME}-api" \
+            --repository-names "reviewlens-ai-${ENVIRONMENT_NAME}-api" \
             --query "repositories[0].repositoryUri" --output text)
           echo "ECR URL: ${ECR_URL}"
 

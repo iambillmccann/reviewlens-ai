@@ -154,7 +154,7 @@ jobs:
 
       - name: Ensure CORS origins include frontend domain
         run: |
-          param_name="/cornerstone-${ENVIRONMENT_NAME}/cors_origins"
+          param_name="/reviewlens-ai-${ENVIRONMENT_NAME}/cors_origins"
           frontend_origin="https://${{ steps.infra.outputs.cloudfront_domain_name }}"
           current_origins=$(aws ssm get-parameter \
             --name "${param_name}" \
@@ -271,19 +271,9 @@ jobs:
         working-directory: apps/web
         run: npm ci
 
-      - name: Resolve frontend build config
-        id: frontend
-        run: |
-          publishable_key=$(aws ssm get-parameter \
-            --name "/cornerstone-${ENVIRONMENT_NAME}/vite_clerk_publishable_key" \
-            --query 'Parameter.Value' \
-            --output text)
-          echo "clerk_publishable_key=${publishable_key}" >> "$GITHUB_OUTPUT"
-
       - name: Build frontend
         working-directory: apps/web
         env:
-          VITE_CLERK_PUBLISHABLE_KEY: ${{ steps.frontend.outputs.clerk_publishable_key }}
           VITE_API_BASE_URL: https://${{ steps.infra.outputs.app_runner_service_url }}
         run: npm run build
 
@@ -327,7 +317,7 @@ jobs:
           # API health/readiness/version checks.
           curl -fsS "${api_base_url}/api/v1/health" | grep -q '"status":"ok"'
           curl -fsS "${api_base_url}/api/v1/ready" | grep -q '"status":"ready"'
-          curl -fsS "${api_base_url}/api/v1/version" | grep -qi 'cornerstone-api'
+          curl -fsS "${api_base_url}/api/v1/version" | grep -qi 'reviewlens-ai-api'
 
           # CORS check: API should emit access-control-allow-origin for frontend origin.
           cors_headers=$(mktemp)
