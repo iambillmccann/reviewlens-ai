@@ -29,7 +29,8 @@ Behavior:
   - Without --session-id, the script finds the newest transcript that
     contains the repo term and exports that one.
   - The raw transcript is copied as .raw.jsonl.
-  - A readable markdown version is written as .readable.md.
+  - A readable markdown version is written as .prompts-responses.md with
+    prompts and responses in conversation order.
 HELP
 }
 
@@ -102,7 +103,7 @@ fi
 
 SESSION_NAME="$(basename "${SRC}" .jsonl)"
 RAW_OUT="${OUTPUT_DIR}/copilot-session-${SESSION_NAME}.raw.jsonl"
-MD_OUT="${OUTPUT_DIR}/copilot-session-${SESSION_NAME}.readable.md"
+MD_OUT="${OUTPUT_DIR}/copilot-session-${SESSION_NAME}.prompts-responses.md"
 
 mkdir -p "${OUTPUT_DIR}"
 cp "${SRC}" "${RAW_OUT}"
@@ -122,20 +123,14 @@ fi
 jq -r '
   def msgtext:
     (.data.content // .data.message // "");
-  def role:
-    if .type=="user.message" then "USER"
-    elif .type=="assistant.message" then "ASSISTANT"
-    else "OTHER" end;
+  def role_label:
+    if .type=="user.message" then "Prompt"
+    elif .type=="assistant.message" then "Response"
+    else "Message" end;
 
   select(.type=="user.message" or .type=="assistant.message")
-  | "## " + role + " | " + (.timestamp // "") + "\n\n"
-    + (if (msgtext|length) > 0 then msgtext else "(no text content)" end) + "\n"
-    + (
-        if (.type=="assistant.message" and (.data.toolRequests|type)=="array" and (.data.toolRequests|length)>0)
-        then "\nTools:\n" + ((.data.toolRequests | map("- " + (.name // "unknown"))) | join("\n")) + "\n"
-        else ""
-        end
-      ) + "\n"
+  | "### " + role_label + " | " + (.timestamp // "") + "\n\n"
+    + (if (msgtext|length) > 0 then msgtext else "(no text content)" end) + "\n\n"
 ' "${SRC}" > "${MD_OUT}"
 
 echo "Wrote readable transcript:"
