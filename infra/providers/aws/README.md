@@ -17,7 +17,7 @@ Deploy Reviewlens-ai to AWS using Terraform and GitHub Actions.
 2. AWS CLI installed and configured
 3. Terraform >= 1.7 installed locally
 4. GitHub repository secret configured:
-   - `AWS_ROLE_ARN`
+   - `AWS_ROLE_TO_ASSUME`
 
 ## Getting Started
 

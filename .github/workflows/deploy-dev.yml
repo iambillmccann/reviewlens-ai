@@ -23,6 +23,10 @@ on:
         required: true
         default: dev
         type: string
+      aws_role_to_assume:
+        description: AWS role to assume for GitHub Actions
+        required: true
+        type: string
       force_backend_rebuild:
         description: Force backend image rebuild even if current commit SHA tag already exists in ECR
         required: true
@@ -46,6 +50,7 @@ env:
   TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
   TF_STATE_KEY: ${{ inputs.tf_state_key }}
   ENVIRONMENT_NAME: ${{ inputs.environment_name }}
+  AWS_ROLE_TO_ASSUME: ${{ inputs.aws_role_to_assume }}
   FORCE_BACKEND_REBUILD: ${{ inputs.force_backend_rebuild }}
 
 jobs:
@@ -70,24 +75,19 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Validate workflow inputs
         run: |
           missing=0
 
-          for name in AWS_REGION TF_STATE_BUCKET TF_STATE_KEY ENVIRONMENT_NAME FORCE_BACKEND_REBUILD; do
+          for name in AWS_REGION TF_STATE_BUCKET TF_STATE_KEY ENVIRONMENT_NAME AWS_ROLE_TO_ASSUME FORCE_BACKEND_REBUILD; do
             if [[ -z "${!name}" ]]; then
               echo "Missing required workflow input: $name" >&2
               missing=1
             fi
           done
-
-          if [[ -z "${{ secrets.AWS_ROLE_ARN }}" ]]; then
-            echo "Missing required repository secret: AWS_ROLE_ARN" >&2
-            missing=1
-          fi
 
           if [[ "$missing" -ne 0 ]]; then
             exit 1

@@ -65,7 +65,7 @@ GitHub Actions workflows are currently AWS-wired, but organized around a provide
 - `.github/workflows/teardown-dev.yml` — pause or destroy cloud resources
 - `.github/workflows/provision-dev.yml` — initial provisioning
 
-Workflows use GitHub Action secrets and dispatch inputs to pass provider-specific configuration (for AWS: `AWS_ROLE_ARN`, `aws_region`, remote state values, and environment inputs). New providers should preserve this operator model while swapping provider-specific credentials and identifiers.
+Workflows use GitHub Action dispatch inputs to pass provider-specific configuration (for AWS: `aws_role_to_assume`, `aws_region`, remote state values, and environment inputs). New providers should preserve this operator model while swapping provider-specific credentials and identifiers.
 
 ## Local Development
 

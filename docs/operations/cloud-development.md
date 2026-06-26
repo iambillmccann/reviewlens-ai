@@ -7,7 +7,7 @@ This runbook covers first-time setup and daily operations for the cloud `dev` en
 1. Configure AWS OIDC trust between GitHub Actions and AWS.
 2. Bootstrap Terraform remote state infrastructure (S3 bucket + DynamoDB lock table).
 3. Ensure required repository secret exists:
-   - `AWS_ROLE_ARN`
+   - `AWS_ROLE_TO_ASSUME`
 4. Prepare workflow-dispatch values for:
    - `aws_region`
    - `tf_state_bucket`

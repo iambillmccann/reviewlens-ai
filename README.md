@@ -197,7 +197,7 @@ Workflow editor note:
 
 Repository secret required:
 
-- `AWS_ROLE_ARN`: IAM role trusted by GitHub OIDC
+- `AWS_ROLE_TO_ASSUME`: IAM role trusted by GitHub OIDC
 
 Provision workflow inputs:
 
