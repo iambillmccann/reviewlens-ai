@@ -1,16 +1,8 @@
 aws_region = "us-east-2"
 environment_name = "dev"
 
-# Clerk
-clerk_jwks_url        = "https://immortal-lark-23.clerk.accounts.dev/.well-known/jwks.json"
-# Optional for compatibility, but recommended for strict JWT validation:
-clerk_issuer          = ""
-clerk_audience        = ""
-clerk_publishable_key = "pk_test_aW1tb3J0YWwtbGFyay0yMy5jbGVyay5hY2NvdW50cy5kZXYk"
-
 # These ARNs are output by bootstrap-state.sh
-clerk_secret_key_arn = "arn:aws:secretsmanager:us-east-2:098295335350:secret:cornerstone-clerk-secret-key-WDz7OH"
-rds_database_url_arn = "arn:aws:secretsmanager:us-east-2:098295335350:secret:cornerstone-database-url-A55JW2"
+rds_database_url_arn = "arn:aws:secretsmanager:us-east-2:798128976501:secret:reviewlens-database-url-Sniv9U"
 
 # RDS Configuration
 rds_instance_class       = "db.t4g.micro"

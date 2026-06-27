@@ -42,6 +42,22 @@ bash bootstrap-state.sh
 
 The script prompts for `CLERK_SECRET_KEY`. Provide your actual Clerk secret key.
 
+### Step 1b: Bootstrap GitHub OIDC Role (One-Time)
+
+The deployment workflows use GitHub OIDC and require an IAM role ARN in repository secret `AWS_ROLE_ARN`.
+
+```bash
+cd infra/providers/aws/scripts
+bash bootstrap-github-oidc.sh
+```
+
+This script:
+
+- Ensures the IAM OIDC provider for `https://token.actions.githubusercontent.com` exists
+- Creates or updates an IAM role trusted by `repo:<owner>/<repo>:*`
+- Attaches managed policies (default: `AdministratorAccess`, override with `MANAGED_POLICY_ARNS`)
+- Prints the role ARN to set as GitHub secret `AWS_ROLE_ARN`
+
 ### Step 2: Configure Terraform Variables
 
 Create `infra/providers/aws/terraform/environments/dev/terraform.tfvars`:
